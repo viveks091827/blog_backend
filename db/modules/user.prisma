@@ -1,0 +1,52 @@
+model User {
+  id                    String        @id @default(uuid())
+  email                 String        @unique @db.VarChar(255)
+  password              String        @db.VarChar(255)
+  salt                  String        @db.VarChar(255)
+  role                  Role          @default(USER)
+  firstName             String?       @db.VarChar(255)
+  lastName              String?       @db.VarChar(255)
+  userName              String?       @unique @db.VarChar(255)
+  address               String?       @db.VarChar(255)
+  country               String?       @db.VarChar(255)
+  region                String?       @db.VarChar(255)
+  backupEmail           String?       @db.VarChar(255)
+  mobileNo              String?       @db.VarChar(255)
+  mobileCountryCode     String?       @db.VarChar(255) 
+  posts                 Post[]
+  comments              Comment[]
+  followedBy            Follows[]     @relation("following")
+  following             Follows[]     @relation("follower")
+  profilePicture        String?       @db.VarChar(255)
+  isActive              Boolean       @default(true)
+  lastVerificationCode  String?       @db.VarChar(255)
+  isEmailVerified       Boolean       @default(false)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+}
+
+
+model Follows {
+  id              String        @id @default(uuid())
+  follower        User          @relation("follower", fields: [followerId], references: [id])
+  followerId      String
+  following       User          @relation("following", fields: [followingId], references: [id])
+  followingId     String
+  status          String        @db.VarChar(255)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model UserQuery {
+  id              String        @id @default(uuid())
+  name            String?       @db.VarChar(255)
+  email           String?       @db.VarChar(255)  
+  message         String?       @db.VarChar(5000)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum Role {
+  ADMIN
+  USER
+}
